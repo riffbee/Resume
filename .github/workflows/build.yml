@@ -1,0 +1,22 @@
+name: build-resume
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: texlive/texlive:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile PDF
+        run: |
+          xelatex -interaction=nonstopmode CV/main.tex
+          xelatex -interaction=nonstopmode CV/main.tex
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume
+          path: CV/main.pdf
