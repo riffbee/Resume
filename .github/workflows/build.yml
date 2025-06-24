@@ -9,27 +9,29 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: texlive/texlive:latest
+
     steps:
       - uses: actions/checkout@v4
-      - name: Compile PDF
+
+      - name: Compile PDF (twice for refs)
+        working-directory: CV
         run: |
-          xelatex -interaction=nonstopmode CV/main.tex
-          xelatex -interaction=nonstopmode CV/main.tex
-      - name: Upload artifact
+          xelatex -interaction=nonstopmode main.tex
+          xelatex -interaction=nonstopmode main.tex
+
+      - name: Upload artefact
         uses: actions/upload-artifact@v4
         with:
           name: resume
           path: CV/main.pdf
 
-  pages:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
+      - name: Copy to public for Pages
+        run: |
           mkdir -p public
           cp CV/main.pdf public/resume.pdf
-      - uses: peaceiris/actions-gh-pages@v4
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: public
