@@ -20,3 +20,16 @@ jobs:
         with:
           name: resume
           path: CV/main.pdf
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p public
+          cp CV/main.pdf public/resume.pdf
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
